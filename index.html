@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pesos de Alumnos</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+  <!-- Alertas -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+  <script>
+    function calcularEstadistica() {
+      // Array para almacenar los pesos de los alumnos
+      const pesosAlumnos = [];
+
+      // Obtener los elementos HTML
+      const pesoInput = document.getElementById("peso");
+      const resultadoDiv = document.getElementById("resultado");
+
+      // Validar y agregar el peso ingresado al array
+      const agregarPeso = () => {
+        const peso = parseFloat(pesoInput.value);
+        
+        if (isNaN(peso) || peso <= 0) {
+          resultadoDiv.innerHTML = "Peso inválido. Intente nuevamente.";
+        } else {
+          pesosAlumnos.push(peso);
+          pesoInput.value = "";
+          resultadoDiv.innerHTML = "";
+          swal({
+            icon: "success",
+            text: "Peso agregado",
+            button: false,
+            timer: 1000
+          });
+        }
+      };
+
+      // Manejar la tecla Enter para agregar el peso
+      pesoInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          agregarPeso();
+        }
+      });
+
+      // Botón para agregar el peso
+      document.getElementById("btnAgregar").addEventListener("click", () => {
+        agregarPeso();
+      });
+
+      // Botón para calcular la estadística
+      document.getElementById("btnCalcular").addEventListener("click", () => {
+        // Variables para contar la cantidad de alumnos en cada categoría
+        let menosDe40Kg = 0;
+        let entre40y50Kg = 0;
+        let masDe50yMenosDe60Kg = 0;
+        let masOIgualA60Kg = 0;
+
+        // Recorrer los pesos de los alumnos y clasificarlos en las categorías correspondientes
+        for (let i = 0; i < pesosAlumnos.length; i++) {
+          const peso = pesosAlumnos[i];
+          
+          if (peso < 40) {
+            menosDe40Kg++;
+          } else if (peso >= 40 && peso < 50) {
+            entre40y50Kg++;
+          } else if (peso >= 50 && peso < 60) {
+            masDe50yMenosDe60Kg++;
+          } else {
+            masOIgualA60Kg++;
+          }
+        }
+
+        // Mostrar los resultados
+        resultadoDiv.innerHTML = "<br>" + "<h2>Estadísticas</h2>" + "Alumnos de menos de 40kg: " + "<b>" + menosDe40Kg + "</b>" + "<br>" +
+                                 "Alumnos entre 40 y 50kg: " + "<b>" + entre40y50Kg + "</b>" + "<br>" +
+                                 "Alumnos de más de 50 y menos de 60kg: " + "<b>" + masDe50yMenosDe60Kg + "</b>" + "<br>" +
+                                 "Alumnos de más o igual a 60kg: " + "<b>" + masOIgualA60Kg + "</b>";
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>Pesos de Alumnos</h1>
+  <label for="peso">Peso del alumno</label><br>
+  <input type="number" id="peso" placeholder="(kg)"><br><br>
+  <button id="btnAgregar">Agregar</button>
+  <button id="btnCalcular">Estadística</button>
+  <div id="resultado"></div>
+
+  <script>
+    // Iniciar el código después de que el documento se haya cargado completamente
+    document.addEventListener("DOMContentLoaded", () => {
+      calcularEstadistica();
+    });
+  </script>
+</body>
+</html>
